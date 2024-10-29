@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "../styles/assignment5_styles.module.css"; 
 
 export { XAxis, YAxis };
 //TODO: complete the YAxis
@@ -8,9 +9,24 @@ export { XAxis, YAxis };
 // For the tick text, we set style={{textAnchor: 'start', fontSize:'10px'}}, x={-offsetX+10},y={yScale.bandwidth()/2}
 function YAxis (props) {
     const { yScale, height, offsetX } = props;
-    return <g>
-        
-    </g>
+    return <g transform={`translate(0, ${offsetX})`}>
+    {/* Draw the axis line */}
+    <line x1={0} y1={0} x2={0} y2={height} stroke="black" />
+
+    {/* Draw the ticks */}
+    {yScale.domain().map((tickValue, index) => (
+        <g key={index} transform={`translate(0, ${yScale(tickValue) + yScale.bandwidth() / 2})`}>
+            <line x1={-5} x2={0} stroke="black" />
+            <text
+                className={styles.tickText} // Use defined style from the CSS module
+                x={-offsetX + 10}
+                y={yScale.bandwidth() / 2}
+            >
+                {tickValue}
+            </text>
+        </g>
+    ))}
+</g>
 }
 
 function XAxis(props) {
@@ -18,7 +34,7 @@ function XAxis(props) {
 
     return <g transform={`translate(${0}, ${height})`}>
         {<line x2={width} stroke='black'/>}
-        {xScale.ticks(5).map(tickValue => 
+        {xScale.ticks(5).map(tickValue =>
             <g key={tickValue} transform={`translate(${xScale(tickValue)}, ${0})`}>
                 <line y2={10} stroke='black' />
                 <text style={{ textAnchor:'end', fontSize:'10px' }} x={5} y={20}>
@@ -27,5 +43,4 @@ function XAxis(props) {
             </g>
         )}
     </g>
-    
 }
